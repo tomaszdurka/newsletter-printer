@@ -12,7 +12,7 @@ def main():
         for i, img in enumerate(convert(url)):
             arr = np.array(img, dtype='?')
             arr = np.invert(arr)
-            img.save(f"{i}.bmp")
+            # img.save(f"{i}.bmp")
             for byte in np.packbits(arr):
                 outfile.write(byte)
 
