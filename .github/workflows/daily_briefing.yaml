@@ -2,9 +2,7 @@ name: Daily briefing
 
 on:
   schedule:
-    - cron: "43 * * * *"
-    - cron: "45 * * * *"
-    - cron: "48 * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
   upload_image:
