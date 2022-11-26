@@ -223,7 +223,12 @@ def text_to_bitmap(text, width):
     
     y = 0
     lines = list(break_text(text, font, width))
-    im = Image.new('1', (width, (font.ch * len(lines)) + ((len(lines) - 1)* line_space)), color=1)
+    if lines:
+        height = (font.ch * len(lines)) + ((len(lines) - 1)* line_space)
+    else:
+        height = 2
+    print ((width, height), lines)
+    im = Image.new('1', (width, height), color=1)
     for line in lines:
         print('---> ', line)
         font.textout(im, line, 0, y)

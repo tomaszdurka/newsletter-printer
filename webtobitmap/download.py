@@ -5,8 +5,9 @@ from .text import text_to_bitmap
 from .image import image_url_to_bitmap
 
 class ImageReference:
-    def __init__(self, url):
+    def __init__(self, url, size):
         self.url = url
+        self.size = size
 
 def extract_elements(element):
     if isinstance(element, Comment):
@@ -17,15 +18,18 @@ def extract_elements(element):
         content = ''
         if element.name.lower() == 'img':
             print("image", element['src'])
-            yield ImageReference(element['src'])
+            size = None
+            if 'height' in element.attrs and 'width' in element.attrs and element['height'] and element['width']:
+                size = (int(element['width']), int(element['height']))
+            yield ImageReference(element['src'], size)
             return
-        elif element.name.lower() in ('span', 'p', 'table', 'tr', 'th', 'td', 'tbody', 'body', 'div', 'center', 'strong', 'em', 'i', 'b'):        
+        elif element.name.lower() in ('span', 'p', 'table', 'tr', 'th', 'td', 'tbody', 'body', 'div', 'center', 'strong', 'em', 'i', 'b', 'a', 'ul', 'ol', 'li'):        
             for child in element.children:
                 child_elements = extract_elements(child)
                 for child_content in child_elements:
                     yield child_content
 
-        if element.name.lower() in ('p', 'br', 'div'):
+        if element.name.lower() in ('p', 'br', 'div', 'li'):
             yield '\n'
         
 
@@ -55,5 +59,5 @@ def convert(url):
             item = re.sub(r"\s+\n", '\n', item, re.MULTILINE)
             yield text_to_bitmap(item, width)
         elif isinstance(item, ImageReference):
-            yield image_url_to_bitmap(item.url, width)
+            yield image_url_to_bitmap(item, width)
 
